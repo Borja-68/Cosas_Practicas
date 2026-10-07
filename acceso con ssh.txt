@@ -1,0 +1,6 @@
+Para iniciar el repo remoto en powershel, datos a introducir en correo
+ssh nombre_usuaroi@ip_ala_que_conectarse
+
+
+URL awx
+http://awx.octavio.internal/
