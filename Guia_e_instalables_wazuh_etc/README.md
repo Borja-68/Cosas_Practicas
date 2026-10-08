@@ -457,11 +457,6 @@ networks:
   red_wazuh:
     name: single-node_default
     external: true
-
-    networks:
-    red_wazuh:
-        name: single-node_default
-        external: true
 ```
 
 (En red_wazuh name colocar la network a la que están conectados wazuh y grafana)

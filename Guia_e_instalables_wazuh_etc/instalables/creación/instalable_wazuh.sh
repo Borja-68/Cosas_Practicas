@@ -35,6 +35,7 @@ echo -e "${YELLOW}🔧 Cambiando puerto del dashboard...${NC}"
 sed -i -e '/wazuh.dashboard:/,/ports:/ {' -e '/ports:/ {n; s/- 443:5601/- '"$Var_puerto_waz"':5601/;}' -e '}' docker-compose.yml
 
 echo -e "${YELLOW}🔧 Introduciendo contraseña al admin...${NC}"
+sed -i -e '/wazuh.indexer:/,/environment/{' -e '/environment:/a \      - OPENSEARCH_INITIAL_ADMIN_PASSWORD='"$Var_contrasena_admin_waz"'|' -e '}' docker-compose.yml
 sed -i -e '/wazuh.manager:/,/INDEXER_PASSWORD=/ {' -e '/INDEXER_PASSWORD=/ {s/INDEXER_PASSWORD=.*/INDEXER_PASSWORD='"$Var_contrasena_admin_waz"'/;}' -e '}' docker-compose.yml
 sed -i -e '/wazuh.dashboard:/,/INDEXER_PASSWORD=/ {' -e '/INDEXER_PASSWORD=/ {s/INDEXER_PASSWORD=.*/INDEXER_PASSWORD='"$Var_contrasena_admin_waz"'/;}' -e '}' docker-compose.yml
 HASH_ADMIN=$(sudo docker run --rm wazuh/wazuh-indexer:4.14.8 /usr/share/wazuh-indexer/plugins/opensearch-security/tools/hash.sh -p "$Var_contrasena_admin_waz" | tail -n 1)
