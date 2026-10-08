@@ -7,8 +7,6 @@ cat > instalar_wazuh.sh <<'SCRIPT'
 
 #Variables de configuración para prometheus
 Var_nombre_network=single-node_default
-Var_nombre_servidor=MI_SERVIDOR
-Var_contrasena_Api_waz=MyS3cr37P450r.*-
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -65,7 +63,7 @@ services:
 
 networks:
   red_wazuh:
-    name: $Var_nombre_network
+    name: ${Var_nombre_network}
     external: true
 EOF
 
@@ -84,9 +82,6 @@ scrape_configs:
       - targets: ["node-exporter:9100"]
         labels:
           nodename: "Servidor"
-
-  - job_name: "nodos-node-exporter"
-    static_configs:
 EOF
 
 echo -e "${YELLOW}🔧 Iniciando contenedor...${NC}"

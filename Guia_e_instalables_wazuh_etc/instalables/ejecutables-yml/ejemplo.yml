@@ -1,0 +1,23 @@
+---
+- name: Configuración básica del servidor remoto
+  hosts: all              # AWX aplicará esto a las IPs que selecciones en su interfaz web
+  become: true            # Le dice a AWX que use 'sudo' para tener permisos de administrador
+
+  vars:
+    nombre_usuario: "operador"
+    ruta_carpeta: "/opt/datos_grafana"
+
+  tasks:
+    # TAREA 1: Crear un usuario en el sistema operativo remoto
+    - name: Asegurar que el usuario existe
+      ansible.builtin.user:
+        name: "{{ nombre_usuario }}"
+        state: present    # "present" significa: "Si no existe, créalo. Si ya existe, déjalo así".
+
+    # TAREA 2: Crear la carpeta y asignársela al usuario
+    - name: Crear carpeta de datos con permisos adecuados
+      ansible.builtin.file:
+        path: "{{ ruta_carpeta }}"
+        state: directory  # Especifica que queremos una carpeta, no un archivo de texto
+        owner: "{{ nombre_usuario }}" # El dueño será el usuario creado arriba
+        mode: '0755'      # Permisos de lectura y escritura estándar
