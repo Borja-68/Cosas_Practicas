@@ -4,7 +4,7 @@ cat > script_borrar_contenedor_por_yml_completo.sh <<'SCRIPT'
 
 
 #Variables de configuración de borrado por imagen
-Var_directorio_yml_contenedor=.
+Var_directorio_yml_contenedor=prometheus-server
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
