@@ -1,0 +1,91 @@
+---
+- name: Creacion de Prometheus en docker
+  hosts: all
+  become: true
+  gather_facts: false  
+
+  vars:
+    var_directorio: {{ var_dir_usuario_prometheus }}
+    var_nombre_network: "single-node_default"
+    
+  tasks:
+    - name: Actualizar repositorios de paquetes
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Crear directorio de Prometheus
+      ansible.builtin.file:
+      path: "{{ var_directorio }}/prometheus-server/prometheus"
+      state: directory
+    
+    - name: Crear directorio de Prometheus
+      ansible.builtin.file:
+      path: "{{ var_directorio }}/prometheus-server"
+      state: directory
+    - name: Crear archivo docker-compose.yml para Prometheus
+      ansible.builtin.copy: 
+        dest: "{{ var_directorio }}/prometheus-server/docker-compose.yml"
+        content: |
+          version: '3.8'
+
+          services:
+            prometheus:
+              image: prom/prometheus:latest
+              container_name: prometheus
+              user: "root"
+              ports:
+                - "9090:9090"
+              volumes:
+                - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+                - ./data:/prometheus
+              command:
+                - '--config.file=/etc/prometheus/prometheus.yml'
+                - '--storage.tsdb.path=/prometheus'
+                - '--storage.tsdb.retention.time=15d'
+              restart: unless-stopped
+              networks:
+                - red_wazuh
+              depends_on:
+                - node-exporter
+
+            node-exporter:
+              image: prom/node-exporter:latest
+              container_name: node-exporter
+              restart: unless-stopped
+              ports:
+                - "9100:9100"
+              pid: host
+              networks:
+                - red_wazuh
+
+          networks:
+            red_wazuh:
+              name: {{var_nombre_network}}
+              external: true
+
+    - name: Crear archivo de configuración de Prometheus
+      ansible.builtin.copy:
+        dest: "{{ var_directorio }}/prometheus-server/prometheus/prometheus.yml"
+        content: |
+          global:
+            scrape_interval: 15s
+          scrape_configs:
+            - job_name: 'prometheus'
+              static_configs:
+                - targets: ['localhost:9090']
+
+    - name: Crear archivo de configuración de Prometheus para Node Exporter
+      ansible.builtin.copy:
+        dest: "{{ var_directorio }}/prometheus-server/prometheus/node-exporter.yml"
+        content: |
+          global:
+            scrape_interval: 15s
+          scrape_configs:
+            - job_name: 'node-exporter'
+              static_configs:
+                - targets: ['node-exporter:9100']
+
+    - name: Iniciar contenedor de Prometheus y Node Exporter
+      community.docker.docker_compose_v2:
+        project_src: "{{ var_directorio }}/prometheus-server"
+        state: present

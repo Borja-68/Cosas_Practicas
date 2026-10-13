@@ -1,0 +1,79 @@
+---
+- name: Creacion de Wazuh en docker
+  hosts: all
+  become: true
+  gather_facts: false  
+
+
+  vars:
+    var_directorio: {{ var_dir_usuario_wazuh }}
+    var_puerto_waz: 5601
+    var_contrasena_admin_waz: "SecretPassword"
+    var_contrasena_Api_waz: "MyS3cr37P450r.*-"
+
+  tasks:
+    - name: Actualizar repositorios de paquetes 
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Clonar repositorio de Wazuh
+      ansible.builtin.git:
+        repo: "https://github.com/wazuh/wazuh-docker.git"
+        version: "v4.14.8"
+        dest: "{{var_directorio}}/wazuh-install/wazuh-docker"
+
+    - name: Crear certificados para Wazuh
+      community.docker.docker_compose_v2:
+        project_src: "{{var_directorio}}/wazuh-install/wazuh-docker/single-node"  
+        files:
+          - generate-indexer-certs.yml             
+        services:
+          - generator                             
+        state: present
+
+    - name: Configurar Wazuh contraseña de Admin y contraseña de API
+      ansible.builtin.replace: 
+        path: "{{var_directorio}}/wazuh-install/wazuh-docker/single-node/docker-compose.yml"
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}" 
+      loop:
+        - regexp: '(wazuh\.dashboard:[\s\(\S\)]*?)- 443:5601'
+          replace: '\1- {{ var_puerto_waz }}:5601'
+        - regexp: '(wazuh\.manager:[\s\(\S\)]*?INDEXER_PASSWORD=).*'
+          replace: '\1{{ var_contrasena_admin_waz }}'
+        - regexp: '(wazuh\.dashboard:[\s\(\S\)]*?INDEXER_PASSWORD=).*'
+          replace: '\1{{ var_contrasena_admin_waz }}'
+        - regexp: '(wazuh\.manager:[\s\(\S\)]*?API_PASSWORD=).*'
+          replace: '\1{{ var_contrasena_Api_waz }}'
+        - regexp: '(wazuh\.dashboard:[\s\(\S\)]*?API_PASSWORD=).*'
+          replace: '\1{{ var_contrasena_Api_waz }}'
+
+
+    - name: Introducir contraseña inicial al administrador de Opensearch
+      ansible.builtin.replace:
+        path: "{{var_directorio}}/wazuh-install/wazuh-docker/single-node/docker-compose.yml"
+        regexp: '(wazuh\.indexer:[\s\(\S\)]*?environment:\s*)'
+        replace: '\1      - OPENSEARCH_INITIAL_ADMIN_PASSWORD={{ var_contrasena_admin_waz }}\n'
+
+    - name: Generar Hash de la contraseña del administrador de Wazuh
+      ansible.builtin.shell:
+        cmd: docker run --rm wazuh/wazuh-indexer:4.14.8 /usr/share/wazuh-indexer/plugins/opensearch-security/tools/hash.sh -p "{{ var_contrasena_admin_waz }}" | tail -n 1
+      register: hash_admin_output
+
+    - name: Inyectar el Hash generado en internal_users.yml (Sección admin)
+      ansible.builtin.replace:
+        path: "{{var_directorio}}/wazuh-install/wazuh-docker/single-node/config/wazuh_indexer/internal_users.yml"
+        regexp: '(admin:[\s\(\S\)]*?hash:\s*).*'
+        replace: '\1"{{ hash_admin_output.stdout | trim }}"'
+
+    - name: Cambiar contraseña de la api en el wazuh yml
+      ansible.builtin.replace:
+        path: "{{var_directorio}}/wazuh-install/wazuh-docker/single-node/config/wazuh_dashboard/wazuh.yml"
+        regexp: '(hosts:[\s\(\S\)]*?password:\s*).*'
+        replace: '\1"{{ var_contrasena_Api_waz }}"'
+
+    - name: Iniciar todos los contenedores del stack de Wazuh
+      community.docker.docker_compose_v2:
+        project_src: "{{var_directorio}}/wazuh-install/wazuh-docker/single-node"
+        state: present
+...

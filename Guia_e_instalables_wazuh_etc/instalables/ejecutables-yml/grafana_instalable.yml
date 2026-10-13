@@ -1,0 +1,56 @@
+---
+- name: Creacion de Grafana en docker
+  hosts: all
+  become: true
+  gather_facts: false  
+
+  vars:
+    var_directorio: {{ var_dir_usuario_grafana }}
+    var_puerto_graf: 3000
+    var_usuario_admin_graf: "admin"
+    var_contrasena_admin_graf: "SecretPassword"
+    var_email_admin_graf: "admin@grafana.local"
+    var_nombre_imagen: "grafana:latest"
+    var_nombre_contenedor: "grafana"
+    var_nombre_network: "single-node_default"
+
+  tasks:
+    - name: Actualizar repositorios de paquetes 
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Clonar repositorio de Grafana
+      ansible.builtin.git:
+        repo: "https://github.com/grafana/grafana.git"
+        dest: "{{var_directorio}}/grafana-install/grafana"
+        version: main
+
+    - name: Configurar Grafana defaults.ini (Usuario Admin, Contraseña y Email)
+      ansible.builtin.lineinfile:
+        path: "{{var_directorio}}/grafana-install/grafana/conf/defaults.ini"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^admin_user =', line: "admin_user = {{ var_usuario_admin_graf }}" }
+        - { regexp: '^admin_password =', line: "admin_password = {{ var_contrasena_admin_graf }}" }
+        - { regexp: '^admin_email =', line: "admin_email = {{ var_email_admin_graf }}" }
+
+    - name: Creacion imagen docker de grafana
+      community.docker.docker_image:
+        name: "{{ var_nombre_imagen }}"
+        build:
+          path: "{{var_directorio}}/grafana-install/grafana"
+          source: build
+        source: build
+
+    - name: Ejecución del contenedor de Grafana
+      community.docker.docker_container:
+        name: "{{ var_nombre_contenedor }}"
+        image: "{{ var_nombre_imagen }}"
+        state: started
+        restart_policy: always
+        networks:
+          - name: "{{ var_nombre_network }}"
+        ports:
+          - "{{ var_puerto_graf }}:3000"
+...
