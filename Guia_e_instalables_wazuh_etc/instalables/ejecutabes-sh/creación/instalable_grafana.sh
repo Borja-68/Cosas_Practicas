@@ -1,54 +1,54 @@
-mkdir grafana-install && cd grafana-install
 
 cat > instalar_grafana.sh <<'SCRIPT'
-#!/bin/bash
-# Ejecuta los siguientes comando para generar el archivo y luego pega el contenido.
-# mkdir compose && cd compose && sudo nano instalar_grafana.sh
-# sudo chmod +x instalar_grafana.sh && ./instalar_grafana.sh
+set -e # Detener ejecución si hay errores
 
-#Variables de configuración para grafana
-Var_puerto_graf=3000
-Var_usuario_admin_graf=admin
-Var_contrasena_admin_graf=SecretPassword
-Var_email_admin_graf=admin@grafana.local
-Var_nombre_imagen=grafana:latest
-Var_nombre_contenedor=grafana
-Var_nombre_network=single-node_default
+VAR_PUERTO_GRAF=3000
+VAR_USUARIO_ADMIN_GRAF="admin"
+VAR_CONTRASENA_ADMIN_GRAF="SecretPassword"
+VAR_NOMBRE_IMAGEN="grafana/grafana:latest"
+VAR_NOMBRE_CONTENEDOR="grafana"
+VAR_NOMBRE_NETWORK="single-node_default"
+VAR_VOLUME_NAME="grafana_data"
 
-
+# Colores para salida en consola
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[1;34m'
-NC='\033[0m' # Sin color
+NC='\033[0m'
 
-set -e  # Detener ejecución si hay errores
+echo -e "${BLUE}🛠️  Iniciando instalación optimizada de Grafana en Docker...${NC}"
 
-echo -e "${BLUE}🛠️  Iniciando instalación de Grafana en Docker...${NC}"
-echo -e "${YELLOW}📦 Actualizando repositorios...${NC}"
-sudo apt-get update
+if ! sudo docker network inspect "$VAR_NOMBRE_NETWORK" >/dev/null 2>&1; then
+    echo -e "${YELLOW}🌐 Creando la red de Docker '${VAR_NOMBRE_NETWORK}'...${NC}"
+    sudo docker network create "$VAR_NOMBRE_NETWORK"
+fi
 
-echo -e "${YELLOW}🔧 Clonando Repositorio oficial ...${NC}"
-git clone https://github.com/grafana/grafana.git
+if ! sudo docker volume inspect "$VAR_VOLUME_NAME" >/dev/null 2>&1; then
+    echo -e "${YELLOW}💾 Creando volumen de datos persistente '${VAR_VOLUME_NAME}'...${NC}"
+    sudo docker volume create "$VAR_VOLUME_NAME"
+fi
 
-echo -e "${YELLOW} Entrando en directorio ...${NC}"
-cd grafana
+echo -e "${YELLOW}📦 Descargando imagen oficial de Grafana...${NC}"
+sudo docker pull "$VAR_NOMBRE_IMAGEN"
 
-echo -e "${YELLOW}🔧 Cambiando nombre admin del dashboard...${NC}"
-sed -i -e '/admin_user =/{' -e '/admin_user =/ {s/admin_user =.*/admin_user = '"$Var_usuario_admin_graf"'/;}' -e '}' conf/defaults.ini
+if sudo docker ps -a --format '{{.Names}}' | grep -q "^${VAR_NOMBRE_CONTENEDOR}$"; then
+    echo -e "${YELLOW}⚠️  Eliminando contenedor previo de Grafana...${NC}"
+    sudo docker rm -f "$VAR_NOMBRE_CONTENEDOR"
+fi
 
-echo -e "${YELLOW}🔧 Cambiando contraseña al admin...${NC}"
-sed -i -e '/admin_password =/{' -e '/admin_password =/ {s/admin_password =.*/admin_password = '"$Var_contrasena_admin_graf"'/;}' -e '}' conf/defaults.ini
+echo -e "${YELLOW}🚀 Desplegando contenedor de Grafana...${NC}"
+sudo docker run -d \
+  --name "$VAR_NOMBRE_CONTENEDOR" \
+  --restart unless-stopped \
+  --network "$VAR_NOMBRE_NETWORK" \
+  -p "${VAR_PUERTO_GRAF}:3000" \
+  -e "GF_SECURITY_ADMIN_USER=${VAR_USUARIO_ADMIN_GRAF}" \
+  -e "GF_SECURITY_ADMIN_PASSWORD=${VAR_CONTRASENA_ADMIN_GRAF}" \
+  -v "${VAR_VOLUME_NAME}:/var/lib/grafana" \
+  "$VAR_NOMBRE_IMAGEN"
 
-echo -e "${YELLOW}🔧 Cambiando email del admin...${NC}"
-sed -i -e '/admin_email =/{' -e '/admin_email =/ {s/admin_email =.*/admin_email = '"$Var_email_admin_graf"'/;}' -e '}' conf/defaults.ini
-
-echo -e "${YELLOW}🔧 Creando imagen de Docker...${NC}"
-sudo docker build -t $Var_nombre_imagen .
-
-echo -e "${YELLOW}📦 Creando contenedor...${NC}"
-sudo docker run -d --name $Var_nombre_contenedor --network $Var_nombre_network -p 3000:3000 $Var_nombre_imagen
-
-echo -e "${GREEN}✅ Grafana instalado correctamente.${NC}"
+echo -e "${GREEN}✅ Grafana instalado y ejecutándose correctamente.${NC}"
 SCRIPT
 
 chmod +x instalar_grafana.sh && ./instalar_grafana.sh
+mkdir grafana-install && cd grafana-install

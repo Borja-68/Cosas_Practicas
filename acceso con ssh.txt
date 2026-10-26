@@ -15,3 +15,12 @@ http://10.10.3.116:3000
 borja.pazo
 huod53SODa47iYe
 
+
+
+notas a futuro:
+-crear paneles con datos de usuarios para grafana acerca de wazuh etc
+-crear yml para la instalación de lo necesario para Docker
+- mirar acerca de esxi versus, VMware y los backupts relacionados a los mismos
+-pasar los logs a una IA en local para que avise en caso de error por telegram o correo
+-mirar acerca de proxis inversos para ips de lugares como rusia india etc
+-observar acerca de snort y suricata 
