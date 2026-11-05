@@ -1,9 +1,9 @@
 mkdir prometheus-install && cd prometheus-install
-cat > instalar_wazuh.sh <<'SCRIPT'
+cat > instalar_prometheus.sh <<'SCRIPT'
 #!/bin/bash
 # Ejecuta los siguientes comando para generar el archivo y luego pega el contenido.
-# mkdir compose && cd compose && sudo nano instalar_wazuh.sh
-# sudo chmod +x instalar_wazuh.sh && ./instalar_wazuh.sh
+# mkdir compose && cd compose && sudo nano instalar_prometheus.sh
+# sudo chmod +x instalar_prometheus.sh && ./instalar_prometheus.sh
 
 #Variables de configuración para prometheus
 Var_nombre_network=single-node_default
@@ -90,4 +90,4 @@ sudo docker compose up -d
 echo -e "${GREEN}✅ Prometheus instalado correctamente.${NC}"
 SCRIPT
 
-chmod +x instalar_wazuh.sh && ./instalar_wazuh.sh
+chmod +x instalar_prometheus.sh && ./instalar_prometheus.sh
