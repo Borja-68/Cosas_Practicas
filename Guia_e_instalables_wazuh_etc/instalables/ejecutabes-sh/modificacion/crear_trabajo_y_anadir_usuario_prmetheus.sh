@@ -20,7 +20,8 @@ set -e  # Detener ejecución si hay errores
 echo -e "${BLUE}🛠️  Iniciando creacion...${NC}"
 echo -e "${YELLOW}📦 Creando contenido a anadir...${NC}"
 Contenido=$(cat <<EOF
-\n  - job_name: "${Var_trabajo_a_asignar_usuario}"
+\n  
+  - job_name: "${Var_trabajo_a_asignar_usuario}"
     static_configs:
       - targets: ["${Var_ip_nuevo_usuario}:9100"]
         labels:
