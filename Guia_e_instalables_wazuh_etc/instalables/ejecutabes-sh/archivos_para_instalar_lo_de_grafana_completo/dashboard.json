@@ -369,23 +369,12 @@
                         "alias": "",
                         "bucketAggs": [
                           {
-                            "field": "@timestamp",
-                            "id": "2",
-                            "settings": {
-                              "min_doc_count": "1",
-                              "order": "desc",
-                              "orderBy": "_term",
-                              "size": "0"
-                            },
-                            "type": "terms"
-                          },
-                          {
                             "field": "agent.id",
                             "id": "3",
                             "settings": {
                               "min_doc_count": "1",
                               "order": "desc",
-                              "orderBy": "_term",
+                              "orderBy": "_count",
                               "size": "10"
                             },
                             "type": "terms"
@@ -499,7 +488,7 @@
                             "settings": {
                               "min_doc_count": "1",
                               "order": "desc",
-                              "orderBy": "_term",
+                              "orderBy": "_count",
                               "size": "10"
                             },
                             "type": "terms"
@@ -6142,7 +6131,7 @@
         "1d"
       ],
       "fiscalYearStartMonth": 0,
-      "from": "now-5m",
+      "from": "now-24h",
       "hideTimepicker": false,
       "timezone": "browser",
       "to": "now"
@@ -6288,7 +6277,7 @@
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "allowCustomValue": false,
           "current": {
             "text": "node-exporter:9100",
             "value": "node-exporter:9100"
@@ -6322,7 +6311,7 @@
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "allowCustomValue": false,
           "current": {
             "text": "node-exporter-local",
             "value": "node-exporter-local"
