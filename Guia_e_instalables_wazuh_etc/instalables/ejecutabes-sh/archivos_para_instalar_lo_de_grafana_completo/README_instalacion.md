@@ -76,7 +76,56 @@
     </group>
     ```
 
-10. Entrar en **docker_compose.yml** y en la sección de **volúmenes** de **wazuh.manager** colocar lo siguiente al final
+10. Entrar en **docker-compose.yml** y en la sección de **volúmenes** de **wazuh.manager** colocar lo siguiente al final
     `- ./config/wazuh_cluster/local_rules.xml:/var/ossec/etc/rules/local_rules.xml`
 
 11. Para el desbloqueo de IPs utilizar el ejecutable desbaneador_de_ips.sh
+
+12. añadir al apartado **wazuh.manager->volumes** de **docker-compose**
+
+    `- ./config/wazuh_cluster/custom-n8n.py:/var/ossec/integrations/custom-n8n.py`
+
+13. Añadir lo siguinete al final, antes del volumes, de **docker-compose**
+
+    ```yaml
+      n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-wazuh
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_SECURE_COOKIE=false
+      - GENERIC_TIMEZONE=Europe/Madrid
+      - TZ=Europe/Madrid
+    volumes:
+      - n8n_data:/home/node/.n8n
+    ```
+
+14. Añadir lo siguiente a la seccion de volumes, al fnal del todo, de **docker-compose**
+    `n8n_data:`
+
+15. Añadir lo siguiente antes de /ossec-conf de **wazuh_manager.conf**
+
+    ````xml
+    <integration>
+      <name>custom-n8n.py</name>
+      <hook_url>http://n8n:5678/webhook/wazuh-alertas</hook_url>
+      <level>5</level>
+      <alert_format>json</alert_format>
+    </integration>
+
+    ```
+16. Ejecutar lo siguiente
+
+    ```bash
+    sudo docker compose up -d
+    sudo docker exec -it single-node-wazuh.manager-1 chown root:wazuh /var/ossec/integrations/custom-n8n.py
+    sudo docker exec -it single-node-wazuh.manager-1 /var/ossec/bin/wazuh-control restart
+
+    ```
+
+17. Abrir n8n e iniciar sesion, despues pegar el json **workflow_n8n.json**
