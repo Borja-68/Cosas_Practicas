@@ -906,7 +906,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "source=wazuh-states-vulnerabilities-* |stats count() as total_cves by agent.name | sort -total_cves | head 10\r\n",
+                        "query": "source=wazuh-states-vulnerabilities-* | where agent.id!= \"000\" AND agent.id!= \"003\" | stats count() as total_cves by agent.name | sort -total_cves | head 10\r\n",
                         "queryType": "PPL",
                         "timeField": "vulnerability.detected_at"
                       },
@@ -1033,7 +1033,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "source=wazuh-states-vulnerabilities-* | stats count() as total by vulnerability.severity | head 100\r\n",
+                        "query": "source=wazuh-states-vulnerabilities-* | where agent.id!= \"000\" AND agent.id!= \"003\"| stats count() as total by vulnerability.severity | head 100\r\n",
                         "queryType": "PPL",
                         "timeField": "vulnerability.detected_at"
                       },
@@ -1654,7 +1654,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "*",
+                        "query": "NOT (agent.id: \"000\" OR agent.id: \"003\")",
                         "queryType": "lucene",
                         "timeField": "vulnerability.detected_at"
                       },
@@ -2283,7 +2283,7 @@
           "description": "",
           "id": 25,
           "links": [],
-          "title": "Nombre del Equipo - $IP",
+          "title": "Nombre del Equipo - $IpServer",
           "vizConfig": {
             "group": "stat",
             "kind": "VizConfig",
@@ -6278,7 +6278,7 @@
           {
             "kind": "RowsLayoutRow",
             "spec": {
-              "collapse": true,
+              "collapse": false,
               "layout": {
                 "kind": "TabsLayout",
                 "spec": {
