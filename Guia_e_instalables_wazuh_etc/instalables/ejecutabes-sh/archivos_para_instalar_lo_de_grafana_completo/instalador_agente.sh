@@ -4,8 +4,8 @@ cat > /tmp/instalador_agente.sh <<'SCRIPT'
 # ==========================================
 # VARIABLES DE CONFIGURACIÓN DEL CLIENTE
 # ==========================================
-Var_ipServer="10.10.200.189"
-Var_NombreAgente="Cliente8"
+Var_ipServer="10.0.2.15"
+Var_NombreAgente="Servidor-Host"
 # Para generar la clave SSH en el Servidor: ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519 && cat ~/.ssh/id_ed25519.pub
 Var_clave_ssh_servidor="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOyEw5JYOtqwvjKdpenwaO63pPSj22DDCW+vZG5Fz512 servidor@Servidor"
 

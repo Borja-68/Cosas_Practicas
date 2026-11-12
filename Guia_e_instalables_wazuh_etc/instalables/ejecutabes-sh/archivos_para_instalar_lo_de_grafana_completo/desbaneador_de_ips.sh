@@ -1,3 +1,5 @@
+IP_A_DESBANEAR="10.0.2.6"
+
 cat > /tmp/desbaneador_de_ips.sh <<'SCRIPT'
 #!/bin/bash
 
@@ -6,7 +8,8 @@ YELLOW='\033[1;33m'
 BLUE='\033[1;34m'
 NC='\033[0m'
 
-Var_ip_a_desbanear="${1:-10.0.2.6}"
+IPS_A_DESBANEAR=("$@")
+PASS_INDEXER="SecretPassword"
 
 echo -e "${BLUE}🔑 Obteniendo token de API...${NC}"
 TOKEN=$(curl -fsS -u wazuh-wui:MyS3cr37P450r.*- -k -X POST "https://localhost:55000/security/user/authenticate?raw=true")
@@ -24,23 +27,47 @@ for agent in data.get("data", {}).get("affected_items", []):
             print(ip)
 ' <<< "$JSON_AGENTES" | sort -u)
 
-for HOST in $IPS_AGENTES; do
-    echo -e "${YELLOW}🔓 Desbaneando ${Var_ip_a_desbanear} y reseteando bloqueo en ${HOST}...${NC}"
-    # 1. Guarda las demás IPs que estaban bloqueadas en iptables (excepto la que queremos desbanear)
-    # 2. Reinicia wazuh-agent para limpiar la memoria de esa IP específica
-    # 3. Restaura inmediatamente las demás IPs bloqueadas en iptables
-    ssh -o StrictHostKeyChecking=no "root@${HOST}" "
-        OTRAS_IPS=\$(iptables -S INPUT | grep ' -j DROP' | grep -v '${Var_ip_a_desbanear}' | awk '{print \$4}');
-        systemctl restart wazuh-agent;
-        sleep 2;
-        for IP_KEEP in \$OTRAS_IPS; do
-            iptables -I INPUT -s \$IP_KEEP -j DROP 2>/dev/null;
-            iptables -I FORWARD -s \$IP_KEEP -j DROP 2>/dev/null;
-        done
-    "
-done
+for IP_TARGET in "${IPS_A_DESBANEAR[@]}"; do
+    echo -e "\n${BLUE}=========================================${NC}"
+    echo -e "${BLUE}🎯 Procesando desbaneo para: ${IP_TARGET}${NC}"
+    echo -e "${BLUE}=========================================${NC}"
 
-echo -e "${GREEN}✅ IP ${Var_ip_a_desbanear} desbaneada y lista para volver a detectarse. Las demás IPs siguen bloqueadas.${NC}"
+    for HOST in $IPS_AGENTES; do
+        echo -e "${YELLOW}🔓 Limpiando ${IP_TARGET} en ${HOST}...${NC}"
+        ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 "root@${HOST}" "
+            OTRAS_IPS=\$(iptables -S INPUT | grep ' -j DROP' | grep -v '${IP_TARGET}' | awk '{print \$4}' | sort -u);
+            systemctl restart wazuh-agent;
+            sleep 2;
+            while iptables -D INPUT -s ${IP_TARGET} -j DROP 2>/dev/null; do :; done;
+            while iptables -D FORWARD -s ${IP_TARGET} -j DROP 2>/dev/null; do :; done;
+            for IP_KEEP in \$OTRAS_IPS; do
+                iptables -C INPUT -s \$IP_KEEP -j DROP 2>/dev/null || iptables -I INPUT -s \$IP_KEEP -j DROP 2>/dev/null;
+                iptables -C FORWARD -s \$IP_KEEP -j DROP 2>/dev/null || iptables -I FORWARD -s \$IP_KEEP -j DROP 2>/dev/null;
+            done
+        " 2>/dev/null || echo -e "${YELLOW}⚠️  No se pudo conectar con ${HOST} (posiblemente apagado).${NC}"
+    done
+
+    echo -e "${YELLOW}🔓 Limpiando ${IP_TARGET} en el Servidor anfitrión...${NC}"
+    while sudo iptables -D INPUT -s "${IP_TARGET}" -j DROP 2>/dev/null; do :; done
+    while sudo iptables -D FORWARD -s "${IP_TARGET}" -j DROP 2>/dev/null; do :; done
+    while sudo iptables -D DOCKER-USER -s "${IP_TARGET}" -j DROP 2>/dev/null; do :; done
+
+    echo -e "${BLUE}🧹 Eliminando alertas 100010 de ${IP_TARGET} en Wazuh Indexer...${NC}"
+    curl -fsS -k -u "admin:${PASS_INDEXER}" -X POST "https://localhost:9200/wazuh-alerts-*/_delete_by_query?refresh=true" \
+      -H 'Content-Type: application/json' \
+      -d "{
+        \"query\": {
+          \"bool\": {
+            \"must\": [
+              { \"term\": { \"rule.id\": \"100010\" } },
+              { \"term\": { \"data.srcip\": \"${IP_TARGET}\" } }
+            ]
+          }
+        }
+      }" >/dev/null
+
+    echo -e "${GREEN}✅ IP ${IP_TARGET} desbaneada por completo.${NC}"
+done
 SCRIPT
 
-chmod +x /tmp/desbaneador_de_ips.sh && /tmp/desbaneador_de_ips.sh && rm -f /tmp/desbaneador_de_ips.sh
+chmod +x /tmp/desbaneador_de_ips.sh && /tmp/desbaneador_de_ips.sh $IP_A_DESBANEAR && rm -f /tmp/desbaneador_de_ips.sh

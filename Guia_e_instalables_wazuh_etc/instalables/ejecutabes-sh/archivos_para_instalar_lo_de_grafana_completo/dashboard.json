@@ -388,7 +388,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "NOT agent.id: \"000\"\n",
+                        "query": "NOT (agent.id: \"000\" OR agent.id: \"003\")\n",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -502,7 +502,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "NOT agent.id: \"000\"",
+                        "query": "NOT (agent.id: \"000\" OR agent.id: \"003\")",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -639,7 +639,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "NOT agent.id: \"000\"",
+                        "query": "NOT (agent.id: \"000\" OR agent.id: \"003\")",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -776,7 +776,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "rule.id: \"5715\" AND NOT agent.id: *000*",
+                        "query": "rule.id: \"5715\" AND NOT (agent.id: \"000\" OR agent.id: \"003\")",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -824,6 +824,7 @@
                       "mode": "off"
                     }
                   },
+                  "noValue": "Sin accesos acertados",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -1288,7 +1289,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "NOT agent.id: \"000\"",
+                        "query": "NOT (agent.id: \"000\" OR agent.id: \"003\")",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -1518,7 +1519,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "rule.id: \"5760\" AND full_log: \"Failed password\" AND NOT agent.id: *000*\n",
+                        "query": "rule.id: \"5760\" AND full_log: \"Failed password\" AND NOT (agent.id: \"000\" OR agent.id: \"003\")\n",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -1568,6 +1569,7 @@
                     }
                   },
                   "min": 0,
+                  "noValue": "Sin accesos fallados",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -1935,7 +1937,7 @@
           "description": "",
           "id": 22,
           "links": [],
-          "title": "Vulneraviliades - $nombreNodo",
+          "title": "Vulnerabilidades - $nombreNodo",
           "vizConfig": {
             "group": "table",
             "kind": "VizConfig",
@@ -3267,7 +3269,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "rule.id: \"5715\" AND agent.id: \"000\"",
+                        "query": "rule.id: \"5715\" AND (agent.id: \"000\" OR agent.id: \"003\")",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -3315,6 +3317,7 @@
                       "mode": "off"
                     }
                   },
+                  "noValue": "Sin accesos acertados",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -3395,7 +3398,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "rule.id: \"5760\" AND full_log: \"Failed password\" AND agent.id: *000*",
+                        "query": "rule.id: \"5760\" AND full_log: \"Failed password\" AND (agent.id: \"000\" OR agent.id: \"003\")",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -3444,6 +3447,7 @@
                     }
                   },
                   "min": 0,
+                  "noValue": "Sin accesos fallados",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -3535,7 +3539,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "agent.id: \"000\"",
+                        "query": "(agent.id: \"000\" OR agent.id: \"003\")",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -3649,7 +3653,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "agent.id: \"000\"",
+                        "query": "(agent.id: \"000\" OR agent.id: \"003\")",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -3808,7 +3812,7 @@
                             "type": "count"
                           }
                         ],
-                        "query": "agent.id: \"000\"",
+                        "query": "(agent.id: \"000\" OR agent.id: \"003\")",
                         "queryType": "lucene",
                         "timeField": "@timestamp"
                       },
@@ -4112,6 +4116,7 @@
                     },
                     "inspect": false
                   },
+                  "noValue": "Sin IPs Baneadas",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -4175,7 +4180,7 @@
                             "settings": {
                               "min_doc_count": "1",
                               "order": "desc",
-                              "orderBy": "_term",
+                              "orderBy": "_count",
                               "size": "10"
                             },
                             "type": "terms"
@@ -4211,6 +4216,7 @@
                       "indexByName": {},
                       "renameByName": {
                         "Count": "Intentos",
+                        "Time": "",
                         "agent.name": "Agente_atacado",
                         "data.srcip": "IP_baneada"
                       }
@@ -4246,6 +4252,7 @@
                     },
                     "inspect": false
                   },
+                  "noValue": "Sin IPs Baneadas",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -4266,6 +4273,630 @@
                 "cellHeight": "sm",
                 "showHeader": true,
                 "zebraStriping": false
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-46": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "cg3w3s4v9pfk0f"
+                      },
+                      "group": "grafana-opensearch-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "",
+                        "bucketAggs": [
+                          {
+                            "field": "agent.name",
+                            "id": "2",
+                            "settings": {
+                              "min_doc_count": "1",
+                              "order": "desc",
+                              "orderBy": "_count",
+                              "size": "10"
+                            },
+                            "type": "terms"
+                          },
+                          {
+                            "field": "agent.id",
+                            "id": "3",
+                            "settings": {
+                              "min_doc_count": "1",
+                              "order": "desc",
+                              "orderBy": "_count",
+                              "size": "10"
+                            },
+                            "type": "terms"
+                          }
+                        ],
+                        "format": "table",
+                        "luceneQueryType": "Metric",
+                        "metrics": [
+                          {
+                            "id": "1",
+                            "type": "count"
+                          }
+                        ],
+                        "query": "(agent.id: \"000\" OR agent.id: \"003\")",
+                        "queryType": "lucene",
+                        "timeField": "@timestamp"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 46,
+          "links": [],
+          "title": "Clasificación por Alertas de Agente",
+          "vizConfig": {
+            "group": "barchart",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "fillOpacity": 80,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineWidth": 1,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      },
+                      {
+                        "color": "#EAB839",
+                        "value": 50
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "barRadius": 0,
+                "barWidth": 0.97,
+                "fullHighlight": false,
+                "groupWidth": 0.7,
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "orientation": "horizontal",
+                "showValue": "auto",
+                "stacking": "none",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                },
+                "xField": "agent.name",
+                "xTickLabelRotation": 0,
+                "xTickLabelSpacing": 0
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-47": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bg3ymn5dln1fkd"
+                      },
+                      "group": "grafana-opensearch-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "",
+                        "bucketAggs": [
+                          {
+                            "field": "vulnerability.detected_at",
+                            "id": "2",
+                            "settings": {
+                              "interval": "auto"
+                            },
+                            "type": "date_histogram"
+                          }
+                        ],
+                        "format": "table",
+                        "luceneQueryType": "Metric",
+                        "metrics": [
+                          {
+                            "id": "1",
+                            "type": "count"
+                          }
+                        ],
+                        "query": "(agent.id: \"000\" OR agent.id: \"003\")",
+                        "queryType": "lucene",
+                        "timeField": "vulnerability.detected_at"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 47,
+          "links": [],
+          "title": "Vulnerabilidades Totales",
+          "vizConfig": {
+            "group": "stat",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "fixedColor": "#ad46ff",
+                    "mode": "thresholds"
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "text",
+                        "value": 0
+                      },
+                      {
+                        "color": "text",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "sum"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-48": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bg3ymn5dln1fkd"
+                      },
+                      "group": "grafana-opensearch-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "",
+                        "bucketAggs": [
+                          {
+                            "field": "vulnerability.detected_at",
+                            "id": "2",
+                            "settings": {
+                              "interval": "auto"
+                            },
+                            "type": "date_histogram"
+                          }
+                        ],
+                        "format": "table",
+                        "luceneQueryType": "Metric",
+                        "metrics": [
+                          {
+                            "id": "1",
+                            "type": "count"
+                          }
+                        ],
+                        "query": "source=wazuh-states-vulnerabilities-* | where agent.id= \"000\" OR agent.id= \"003\" | stats count() as total by vulnerability.severity | head 100\r\n",
+                        "queryType": "PPL",
+                        "timeField": "vulnerability.detected_at"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": [
+                {
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "fields": [
+                        "vulnerability.severity"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "description": "",
+          "id": 48,
+          "links": [],
+          "title": "Vulnerabilidades Clasificadas",
+          "vizConfig": {
+            "group": "piechart",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "fixedColor": "#73BF69",
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    }
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "Critical": {
+                          "color": "red",
+                          "index": 0
+                        },
+                        "High ": {
+                          "color": "orange",
+                          "index": 1
+                        },
+                        "Low ": {
+                          "color": "green",
+                          "index": 3
+                        },
+                        "Medium ": {
+                          "color": "yellow",
+                          "index": 2
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ],
+                  "noValue": "Sin Vulnerabilidades"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "total Critical",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "red",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Critical"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "total High",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "orange",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "High"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "total Medium",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "yellow",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Medium"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "total Low",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "#73BF69",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Low"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "total -",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "blue",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Unkown"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "legend": {
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "pieType": "pie",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "/.*/",
+                  "values": false
+                },
+                "sort": "desc",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-49": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bg3ymn5dln1fkd"
+                      },
+                      "group": "armanfeyzi-wazuh-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "",
+                        "bucketAggs": [
+                          {
+                            "field": "agent.name",
+                            "id": "2",
+                            "settings": {
+                              "min_doc_count": "1",
+                              "order": "desc",
+                              "orderBy": "_term",
+                              "size": "10"
+                            },
+                            "type": "terms"
+                          }
+                        ],
+                        "format": "table",
+                        "index": "wazuh-states-vulnerabilities-wazuh.manager",
+                        "luceneQueryType": "Metric",
+                        "metrics": [
+                          {
+                            "id": "1",
+                            "type": "count"
+                          }
+                        ],
+                        "query": "source=wazuh-states-vulnerabilities-* |where agent.id= \"000\" OR agent.id= \"003\"| stats count() as total_cves by agent.name | sort -total_cves | head 10\r\n",
+                        "queryType": "PPL",
+                        "timeField": "vulnerability.detected_at"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 49,
+          "links": [],
+          "title": "Vulnerabilidades Usuario",
+          "vizConfig": {
+            "group": "barchart",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "continuous-GrYlRd"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "fillOpacity": 100,
+                    "gradientMode": "scheme",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineWidth": 0,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "noValue": "Sin Vulnerabilidades",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "barRadius": 0.05,
+                "barWidth": 0.95,
+                "colorByField": "agent.name",
+                "fullHighlight": false,
+                "groupWidth": 0.8,
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "orientation": "horizontal",
+                "showValue": "auto",
+                "stacking": "none",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                },
+                "xField": "time",
+                "xTickLabelRotation": 0,
+                "xTickLabelSpacing": 100
               }
             },
             "version": "13.3.0"
@@ -4355,6 +4986,367 @@
               "options": {
                 "cellHeight": "sm",
                 "showHeader": true,
+                "zebraStriping": false
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-50": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bg3ymn5dln1fkd"
+                      },
+                      "group": "grafana-opensearch-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "",
+                        "bucketAggs": [
+                          {
+                            "field": "agent.name",
+                            "id": "2",
+                            "settings": {
+                              "min_doc_count": "1",
+                              "order": "desc",
+                              "orderBy": "_count",
+                              "size": "10"
+                            },
+                            "type": "terms"
+                          },
+                          {
+                            "field": "vulnerability",
+                            "id": "3",
+                            "settings": {
+                              "min_doc_count": "1",
+                              "order": "desc",
+                              "orderBy": "_count",
+                              "size": "10"
+                            },
+                            "type": "terms"
+                          }
+                        ],
+                        "format": "table",
+                        "luceneQueryType": "RawData",
+                        "metrics": [
+                          {
+                            "id": "1",
+                            "settings": {
+                              "order": "desc",
+                              "size": "8000",
+                              "useTimeRange": true
+                            },
+                            "type": "raw_data"
+                          }
+                        ],
+                        "query": "*",
+                        "queryType": "lucene",
+                        "timeField": "vulnerability.detected_at"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": [
+                {
+                  "group": "filterByValue",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "filters": [
+                        {
+                          "config": {
+                            "id": "equal",
+                            "options": {
+                              "value": "000"
+                            }
+                          },
+                          "fieldName": "agent.id"
+                        },
+                        {
+                          "config": {
+                            "id": "equal",
+                            "options": {
+                              "value": "003"
+                            }
+                          },
+                          "fieldName": "agent.id"
+                        }
+                      ],
+                      "match": "any",
+                      "type": "include"
+                    }
+                  }
+                },
+                {
+                  "group": "organize",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {
+                        "_id": true,
+                        "_index": true,
+                        "_type": true,
+                        "agent.id": true,
+                        "agent.type": true,
+                        "agent.version": true,
+                        "host.os.full": true,
+                        "host.os.kernel": true,
+                        "host.os.name": true,
+                        "host.os.platform": true,
+                        "host.os.type": true,
+                        "host.os.version": true,
+                        "package.architecture": true,
+                        "package.description": true,
+                        "package.name": false,
+                        "package.size": true,
+                        "package.type": true,
+                        "package.version": false,
+                        "vulnerability.category": true,
+                        "vulnerability.classification": true,
+                        "vulnerability.detected_at": false,
+                        "vulnerability.enumeration": true,
+                        "vulnerability.published_at": true,
+                        "vulnerability.reference": true,
+                        "vulnerability.scanner.condition": true,
+                        "vulnerability.scanner.reference": true,
+                        "vulnerability.scanner.source": true,
+                        "vulnerability.scanner.vendor": true,
+                        "vulnerability.score.base": false,
+                        "vulnerability.score.version": true,
+                        "vulnerability.under_evaluation": true,
+                        "wazuh.cluster.name": true,
+                        "wazuh.schema.version": true
+                      },
+                      "includeByName": {},
+                      "indexByName": {
+                        "_id": 8,
+                        "_index": 10,
+                        "_type": 11,
+                        "agent.id": 12,
+                        "agent.name": 0,
+                        "agent.type": 13,
+                        "agent.version": 14,
+                        "host.os.full": 15,
+                        "host.os.kernel": 16,
+                        "host.os.name": 17,
+                        "host.os.platform": 18,
+                        "host.os.type": 19,
+                        "host.os.version": 20,
+                        "package.architecture": 21,
+                        "package.description": 22,
+                        "package.name": 6,
+                        "package.size": 23,
+                        "package.type": 24,
+                        "package.version": 7,
+                        "vulnerability.category": 25,
+                        "vulnerability.classification": 26,
+                        "vulnerability.description": 3,
+                        "vulnerability.detected_at": 4,
+                        "vulnerability.enumeration": 27,
+                        "vulnerability.id": 1,
+                        "vulnerability.published_at": 28,
+                        "vulnerability.reference": 29,
+                        "vulnerability.scanner.condition": 30,
+                        "vulnerability.scanner.reference": 31,
+                        "vulnerability.scanner.source": 32,
+                        "vulnerability.scanner.vendor": 33,
+                        "vulnerability.score.base": 5,
+                        "vulnerability.score.version": 9,
+                        "vulnerability.severity": 2,
+                        "vulnerability.under_evaluation": 34,
+                        "wazuh.cluster.name": 35,
+                        "wazuh.schema.version": 36
+                      },
+                      "renameByName": {}
+                    }
+                  }
+                },
+                {
+                  "group": "convertFieldType",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "conversions": [
+                        {
+                          "destinationType": "enum",
+                          "enumConfig": {
+                            "text": [
+                              "-",
+                              "Low",
+                              "Medium",
+                              "High",
+                              "Critical"
+                            ]
+                          },
+                          "targetField": "vulnerability.severity"
+                        }
+                      ],
+                      "fields": {}
+                    }
+                  }
+                },
+                {
+                  "group": "sortBy",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "fields": {},
+                      "sort": [
+                        {
+                          "field": "vulnerability.severity"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "description": "",
+          "id": 50,
+          "links": [],
+          "title": "Vulnerabilidades Servidor",
+          "vizConfig": {
+            "group": "table",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "fixedColor": "text",
+                    "mode": "fixed"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "color-text"
+                    },
+                    "footer": {
+                      "reducers": []
+                    },
+                    "inspect": false
+                  },
+                  "noValue": "Sin Vulnerabilidades",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "vulnerability.classification",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "-": {
+                                "index": 0,
+                                "text": "Unknown"
+                              }
+                            },
+                            "type": "value"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "vulnerability.severity",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "0": {
+                                "color": "blue",
+                                "index": 0,
+                                "text": "Unkown"
+                              },
+                              "1": {
+                                "color": "green",
+                                "index": 1,
+                                "text": "Low"
+                              },
+                              "2": {
+                                "color": "yellow",
+                                "index": 2,
+                                "text": "Medium"
+                              },
+                              "3": {
+                                "color": "orange",
+                                "index": 3,
+                                "text": "High"
+                              },
+                              "4": {
+                                "color": "red",
+                                "index": 4,
+                                "text": "Critical"
+                              }
+                            },
+                            "type": "value"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "package.size",
+                      "scope": "series"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "decbytes"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "vulnerability.score.base"
+                  }
+                ],
                 "zebraStriping": false
               }
             },
@@ -4882,7 +5874,7 @@
                             ]
                           }
                         },
-                        "title": "Informacion cliente"
+                        "title": "Información Cliente"
                       }
                     },
                     {
@@ -5012,7 +6004,7 @@
                             ]
                           }
                         },
-                        "title": "Informacion Servidor"
+                        "title": "Información Servidor"
                       }
                     }
                   ]
@@ -5240,8 +6232,21 @@
                                     "name": "panel-37"
                                   },
                                   "height": 10,
-                                  "width": 24,
+                                  "width": 12,
                                   "x": 0,
+                                  "y": 23
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-46"
+                                  },
+                                  "height": 10,
+                                  "width": 12,
+                                  "x": 12,
                                   "y": 23
                                 }
                               },
@@ -5273,61 +6278,139 @@
           {
             "kind": "RowsLayoutRow",
             "spec": {
-              "collapse": false,
+              "collapse": true,
               "layout": {
-                "kind": "GridLayout",
+                "kind": "TabsLayout",
                 "spec": {
-                  "items": [
+                  "tabs": [
                     {
-                      "kind": "GridLayoutItem",
+                      "kind": "TabsLayoutTab",
                       "spec": {
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-21"
+                        "layout": {
+                          "kind": "GridLayout",
+                          "spec": {
+                            "items": [
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-21"
+                                  },
+                                  "height": 8,
+                                  "width": 8,
+                                  "x": 0,
+                                  "y": 0
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-18"
+                                  },
+                                  "height": 8,
+                                  "width": 16,
+                                  "x": 8,
+                                  "y": 0
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-17"
+                                  },
+                                  "height": 10,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 8
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-22"
+                                  },
+                                  "height": 20,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 18
+                                }
+                              }
+                            ]
+                          }
                         },
-                        "height": 8,
-                        "width": 8,
-                        "x": 0,
-                        "y": 0
+                        "title": "Vulnerabilidades Agentes"
                       }
                     },
                     {
-                      "kind": "GridLayoutItem",
+                      "kind": "TabsLayoutTab",
                       "spec": {
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-18"
+                        "layout": {
+                          "kind": "GridLayout",
+                          "spec": {
+                            "items": [
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-47"
+                                  },
+                                  "height": 8,
+                                  "width": 8,
+                                  "x": 0,
+                                  "y": 0
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-48"
+                                  },
+                                  "height": 8,
+                                  "width": 16,
+                                  "x": 8,
+                                  "y": 0
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-49"
+                                  },
+                                  "height": 10,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 8
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-50"
+                                  },
+                                  "height": 20,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 18
+                                }
+                              }
+                            ]
+                          }
                         },
-                        "height": 8,
-                        "width": 16,
-                        "x": 8,
-                        "y": 0
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-17"
-                        },
-                        "height": 10,
-                        "width": 24,
-                        "x": 0,
-                        "y": 8
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-22"
-                        },
-                        "height": 20,
-                        "width": 24,
-                        "x": 0,
-                        "y": 18
+                        "title": "Vulnerabilidades Servidor"
                       }
                     }
                   ]

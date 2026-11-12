@@ -5,10 +5,12 @@ cat > /tmp/anadir_usuario_a_prometheus.sh <<'SCRIPT'
 
 #Variables de configuración para crear agente de prometheus
 Var_directorio_prometheus=prometheus-server/prometheus
-Var_ip_nuevo_usuario=10.10.200.189
-Var_nombre_equipo_nuevo_usuario=Cliente8
-Var_trabajo_a_asignar_usuario=nodo-usuarios
+Var_ip_nuevo_usuario=10.0.2.8
+Var_nombre_equipo_nuevo_usuario=Cliente2
+Var_trabajo_a_asignar_usuario=Default
 Var_nombre_nodo_exporter_local=Servidor
+Var_nombre_contenedor_prometheus=prometheus
+Var_nombre_contenedor_node_exporter=node-exporter
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -60,6 +62,9 @@ sed -i -e '/job_name: "'"$Var_trabajo_a_asignar_usuario"'"/,/nodename: "'"$Var_n
 echo -e "${GREEN}✅ Usuario anadido correctamente.${NC}"
 
 fi
+
+sudo docker restart ${Var_nombre_contenedor_prometheus} && sudo docker restart ${Var_nombre_contenedor_node_exporter}
+echo -e "${GREEN}✅ Contenedores reiniciados correctamente.${NC}"
 
 SCRIPT
 

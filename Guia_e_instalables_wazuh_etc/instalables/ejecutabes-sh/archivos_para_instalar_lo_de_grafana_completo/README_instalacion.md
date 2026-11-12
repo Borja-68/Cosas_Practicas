@@ -1,10 +1,19 @@
 # Guía instalación
 
-1. Cambiar comfiguración de teclado a español
-
+1. Configuración previa
+    (cambio idioma del teclado)
     `sudo dpkg-reconfigure keyboard-configuration`
     (luego)
     `sudo setupcon`
+
+    (instalacion ssh)
+    `sudo apt update && sudo apt install openssh-server -y`
+
+    (reiniciar key del puerto por si acaso en powershell)
+    `ssh-keygen -R "[localhost]:2225"`
+
+    (ejecutar instalar_docker.sh)
+
 
 2. Ejecutar yaml de intalacion **instalador.yaml**
 
