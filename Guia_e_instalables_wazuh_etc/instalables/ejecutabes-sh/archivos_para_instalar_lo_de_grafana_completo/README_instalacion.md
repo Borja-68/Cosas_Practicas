@@ -85,7 +85,7 @@
 
     `- ./config/wazuh_cluster/custom-n8n.py:/var/ossec/integrations/custom-n8n.py`
 
-13. Añadir lo siguinete al final, antes del volumes, de **docker-compose**
+13. Añadir lo siguiente al final, antes del volumes, de **docker-compose**
 
     ```yaml
       n8n:
@@ -124,6 +124,7 @@
     ```bash
     sudo docker compose up -d
     sudo docker exec -it single-node-wazuh.manager-1 chown root:wazuh /var/ossec/integrations/custom-n8n.py
+    sudo docker exec -it single-node-wazuh.manager-1 chmod 750 /var/ossec/integrations/custom-n8n.py
     sudo docker exec -it single-node-wazuh.manager-1 /var/ossec/bin/wazuh-control restart
 
     ```

@@ -1,4 +1,4 @@
-IP_A_DESBANEAR="10.0.2.6"
+IP_A_DESBANEAR="10.0.2.8"
 
 cat > /tmp/desbaneador_de_ips.sh <<'SCRIPT'
 #!/bin/bash
